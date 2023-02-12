@@ -6,8 +6,7 @@
                 
                 "C:/devkitPRO/devkitARM/arm-none-eabi/include/**",
                 "C:/devkitPRO/devkitARM/lib/gcc/arm-none-eabi/**",
-                "C:/devkitPRO/libctru/include/**",
-                "C:/devkitPRO/portlibs/3ds/include/**"
+                "C:/devkitPRO/libctru/include/**"
             ],
             "defines": [
                 "_3DS"

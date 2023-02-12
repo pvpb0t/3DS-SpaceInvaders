@@ -9,20 +9,19 @@
 #define SCREEN_WIDTH  320
 #define SCREEN_HEIGHT 240
 
-consoleInit(GFX_TOP, NULL);
 int main(int argc, char** argv)
 {
-	romfsInit();
 	gfxInitDefault();
+	consoleInit(GFX_TOP, NULL);
+
 
 	// Main loop
 	while (aptMainLoop())
 	{
 		//Scan all the inputs. This should be done once for each frame
 		hidScanInput();
-		consoleClear();
-	
-
+		
+		u32 kDown = hidKeysDown();
 		if (kDown & KEY_START) break; // break in order to return to hbmenu
 
 		// Print a string to the console
@@ -36,7 +35,6 @@ int main(int argc, char** argv)
 		gspWaitForVBlank();
 	}
 
-	onClose();
 
 	gfxExit();
 	romfsExit();
