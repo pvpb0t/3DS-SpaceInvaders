@@ -1,8 +1,7 @@
-# 3DS TicTacToe
-A 3DS tic-tac-toe game made with the devkitpro 3ds included libs.
+# 3DS SpaceInvaders
+A 3DS SpaceInvaders game made with the devkitpro 3ds included libs.
 
-Made by kitsou and pvpb0t.
+Made by   pvpb0t.
 
-Assets made by speedyrogue & kitsou.
+Assets made by speedyrogue.
 
-**NOT UPDATED ANYMORE**
