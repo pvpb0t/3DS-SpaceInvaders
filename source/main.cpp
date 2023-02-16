@@ -21,6 +21,9 @@ typedef struct {
 static C2D_SpriteSheet spriteSheet;
 static Sprite sprites[MAX_SPRITES];
 
+// Declaring the prototype for initSprites, the function that will initialize the sprites
+static void initSprites();
+
 int main(int argc, char** argv)
 {
 	gfxInitDefault();
@@ -48,7 +51,7 @@ int main(int argc, char** argv)
 
 	initSprites();
 
-	C2D_Sprite spaceship = &sprites[4]->sprite;
+	C2D_Sprite spaceship = sprites[4].sprite;
 	float x = 100.0f;
     float y = 100.0f;
     int width = 64;
