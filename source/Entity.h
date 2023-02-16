@@ -20,6 +20,7 @@ public:
     int getHP() const;
     bool isMoving() const;
     int getSprite() const;
+    bool isAlive() const;
 
     // Setters //
     void gotoX(float x);
@@ -29,7 +30,7 @@ public:
     void moveByY(float value);
     void moveByVector(float valueX, float valueY);
     void killEntity();
-    void takeDamage();
+    void takeDamage(int dmgAmount);
     void shoot();
 
 private:
