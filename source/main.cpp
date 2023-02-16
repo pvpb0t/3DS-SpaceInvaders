@@ -41,7 +41,6 @@ int main(int argc, char** argv)
 	localplayer.setX(2);
 
 
-
 	spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
 
 	if(!spriteSheet){
