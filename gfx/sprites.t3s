@@ -1,3 +1,9 @@
 --atlas -f rgba8888 -z auto
-green.png
-player.png
+Alien1.png
+Alien2.png
+AlienDMG1.png
+AlienDMG2.png
+SpaceShip1.png
+SpaceShip2.png
+SpaceShipDMG1.png
+SpaceShipDMG2.png
