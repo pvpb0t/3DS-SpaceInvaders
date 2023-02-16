@@ -33,7 +33,7 @@ include $(DEVKITARM)/3ds_rules
 #---------------------------------------------------------------------------------
 APP_TITLE		:= 	Space Invaders
 APP_DESCRIPTION	:=	Cool game
-APP_AUTHOR		:=	Kitsou and pvpb0t
+APP_AUTHOR		:=	kitsou and pvpb0t
 
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
