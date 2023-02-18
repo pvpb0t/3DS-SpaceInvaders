@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 		C2D_SceneBegin(top);
 		if(isShooting){
 			localplayer.shoot(isShooting, top);
-			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS)) {
+			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS, isShooting)) {
     }
 		}
 		//C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
