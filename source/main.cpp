@@ -7,17 +7,18 @@
 #include <cstdio>
 #include "player.hpp"
 #include "enemy.hpp"
+#include "constants.hpp"
 
 #define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
 
 
 #define MAX_SPRITES 8
-#define ENEMY_ROWS 4
-#define ENEMY_COLUMNS 8
+//#define ENEMY_ROWS 4
+//#define ENEMY_COLUMNS 6
 
-static constexpr int MAXIMUM_ROWS {ENEMY_ROWS};
-static constexpr int MAXIMUM_COLUMS {ENEMY_COLUMNS};
+//static constexpr int MAXIMUM_ROWS {ENEMY_ROWS};
+//static constexpr int MAXIMUM_COLUMS {ENEMY_COLUMNS};
 static Enemy enemies[MAXIMUM_ROWS][MAXIMUM_COLUMS];
 
 typedef struct {
@@ -37,6 +38,9 @@ static bool isShooting = false;
 
 // Declaring the prototype for initSprites, the function that will initialize the sprites
 static void initSprites();
+
+static int ticksExisted=0;
+static bool shouldMoveRight=true;
 
 
 int main(int argc, char** argv)
@@ -71,12 +75,13 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < MAXIMUM_ROWS; i++) {
 		for (int j = 0; j < MAXIMUM_COLUMS; j++) {
-    	enemies[i][j] = Enemy(0, j*32.0f, i*32.0f, 16.0f, 16.0f, 0);
-  }}
+    	enemies[i][j] = Enemy(1, 48+j*32.0, 16+i*32.0, 16.0f, 16.0f, 0);
+  	}}
 
 	// Main loop
 	while (aptMainLoop())
 	{
+		ticksExisted++;
 		//Scan all the inputs. This should be done once for each frame
 		hidScanInput();
 		
@@ -97,6 +102,20 @@ int main(int argc, char** argv)
 			localplayer.setProjectile(localplayer.getX(), localplayer.getY());
 			}
 		}
+
+		if(ticksExisted%34==0){
+			for (int i = 0; i < MAXIMUM_ROWS; i++) {
+			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+				float curX = enemies[i][j].getX();
+				float curY = enemies[i][j].getY();
+				float newX=shouldMoveRight?curX-16.0f:curX+16.0f;
+				enemies[i][j].gotoPosition(newX, curY);
+  		}
+		}
+		shouldMoveRight=!shouldMoveRight;
+
+		}
+
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
 		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
@@ -109,6 +128,8 @@ int main(int argc, char** argv)
 		C2D_SceneBegin(top);
 		if(isShooting){
 			localplayer.shoot(isShooting, top);
+			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS)) {
+    }
 		}
 		//C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
@@ -116,9 +137,10 @@ int main(int argc, char** argv)
 
 		for (int i = 0; i < MAXIMUM_ROWS; i++) {
 			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+			if(enemies[i][j].isAlive()){
 			C2D_SpriteSetPos(&sprites[enemies[i][j].getSprite()].sprite, enemies[i][j].getX(), enemies[i][j].getY());
 			C2D_DrawSprite(&sprites[enemies[i][j].getSprite()].sprite);
-
+			}
   		}
 		}
 

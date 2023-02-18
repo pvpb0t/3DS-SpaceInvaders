@@ -10,6 +10,7 @@ public:
     Enemy(int maxHP, float x, float y, float width, float height, int spriteIndex);
     virtual ~Enemy();
 
+    
     void move(float dx, float dy);
 };
 
