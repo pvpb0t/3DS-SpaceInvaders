@@ -9,8 +9,7 @@
 #include "enemy.hpp"
 #include "constants.hpp"
 
-#define SCREEN_WIDTH  400
-#define SCREEN_HEIGHT 240
+
 
 
 #define MAX_SPRITES 8
@@ -71,7 +70,7 @@ int main(int argc, char** argv)
 
 	C2D_Sprite &spaceship = sprites[localplayer.getSprite()].sprite;
 	C2D_SpriteSetScale(&spaceship, 1.0f, 1.0f);
-	localplayer.gotoY(SCREEN_HEIGHT-50);
+	localplayer.gotoY(MAX_SCREEN_HEIGHT-50);
 
 	for (int i = 0; i < MAXIMUM_ROWS; i++) {
 		for (int j = 0; j < MAXIMUM_COLUMS; j++) {
@@ -116,6 +115,16 @@ int main(int argc, char** argv)
 
 		}
 
+		if(ticksExisted%500==0){
+			for (int i = 0; i < MAXIMUM_ROWS; i++) {
+			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+				float curX = enemies[i][j].getX();
+				float curY = enemies[i][j].getY()+16.0f;
+				enemies[i][j].gotoPosition(curX, curY);
+  		}
+		}
+		}
+
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
 		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
@@ -131,13 +140,32 @@ int main(int argc, char** argv)
 			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS, isShooting)) {
     }
 		}
-		//C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
+		//C2D_DrawRectangle(localplayer.getX(), MAX_SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
 		C2D_DrawSprite(&spaceship);
 
 		for (int i = 0; i < MAXIMUM_ROWS; i++) {
 			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
 			if(enemies[i][j].isAlive()){
+				if(i==MAXIMUM_ROWS-1){
+					int randNum = rand() % 100;
+    				if (randNum < 5) { 
+						if(!enemies[i][j].isShooting()){
+						
+						enemies[i][j].setShooting(true);
+						}
+					}
+					
+					if(enemies[i][j].isShooting()){
+					enemies[i][j].shoot(top);
+				
+					if(enemies[i][j].checkCollisions(localplayer)){
+
+					}
+					}
+					
+					
+				}
 			C2D_SpriteSetPos(&sprites[enemies[i][j].getSprite()].sprite, enemies[i][j].getX(), enemies[i][j].getY());
 			C2D_DrawSprite(&sprites[enemies[i][j].getSprite()].sprite);
 			}
@@ -170,7 +198,7 @@ static void initSprites(){
 
         C2D_SpriteFromSheet(&sprite->sprite, spriteSheet,i);
         C2D_SpriteSetCenter(&sprite->sprite, 0.5f, 0.5f);
-        C2D_SpriteSetPos(&sprite->sprite, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+        C2D_SpriteSetPos(&sprite->sprite, rand() % MAX_SCREEN_WIDTH, rand() % MAX_SCREEN_HEIGHT);
     }
 }
 
