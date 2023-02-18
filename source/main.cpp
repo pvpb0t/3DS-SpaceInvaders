@@ -27,6 +27,7 @@ enum class Color : u32 {
 
 static C2D_SpriteSheet spriteSheet;
 static Sprite sprites[MAX_SPRITES];
+static bool isShooting = false;
 
 // Declaring the prototype for initSprites, the function that will initialize the sprites
 static void initSprites();
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
 	C2D_Prepare();
 	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_TOP, GFX_RIGHT);
 
-    Player localplayer(10, 0.0f, 0.0f, 16.0f, 16.0f, 0);
+    Player localplayer(10, 0.0f, 0.0f, 16.0f, 16.0f, 4);
 
 
 
@@ -58,7 +59,9 @@ int main(int argc, char** argv)
 
 	initSprites();
 
-	C2D_Sprite spaceship = sprites[4].sprite;
+	C2D_Sprite &spaceship = sprites[localplayer.getSprite()].sprite;
+	C2D_SpriteSetScale(&spaceship, 1.0f, 1.0f);
+	localplayer.gotoY(SCREEN_HEIGHT-50);
 
 	// Main loop
 	while (aptMainLoop())
@@ -77,6 +80,18 @@ int main(int argc, char** argv)
             localplayer.moveRight();
         }
 
+		if(kDown & KEY_A){
+			if(!isShooting){
+			isShooting=true;
+			localplayer.setProjectile(localplayer.getX(), localplayer.getY());
+			}
+		}
+
+		if(isShooting){
+			localplayer.shoot(isShooting, top);
+
+		}
+
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
 		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
@@ -87,8 +102,11 @@ int main(int argc, char** argv)
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, static_cast<u32>(Color::Clear));
 		C2D_SceneBegin(top);
-		C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
-		//C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
+		//C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
+		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
+
+		C2D_DrawSprite(&spaceship);
+
 		C3D_FrameEnd(0);
 
 		// Flush and swap framebuffers
