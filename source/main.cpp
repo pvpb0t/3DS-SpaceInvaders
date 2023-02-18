@@ -6,13 +6,19 @@
 #include <time.h>
 #include <cstdio>
 #include "player.hpp"
+#include "enemy.hpp"
 
 #define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
 
 
 #define MAX_SPRITES 8
+#define ENEMY_ROWS 4
+#define ENEMY_COLUMNS 8
 
+static constexpr int MAXIMUM_ROWS {ENEMY_ROWS};
+static constexpr int MAXIMUM_COLUMS {ENEMY_COLUMNS};
+static Enemy enemies[MAXIMUM_ROWS][MAXIMUM_COLUMS];
 
 typedef struct {
 	C2D_Sprite sprite;
@@ -63,6 +69,11 @@ int main(int argc, char** argv)
 	C2D_SpriteSetScale(&spaceship, 1.0f, 1.0f);
 	localplayer.gotoY(SCREEN_HEIGHT-50);
 
+	for (int i = 0; i < MAXIMUM_ROWS; i++) {
+		for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+    	enemies[i][j] = Enemy(0, j*32.0f, i*32.0f, 16.0f, 16.0f, 0);
+  }}
+
 	// Main loop
 	while (aptMainLoop())
 	{
@@ -86,12 +97,6 @@ int main(int argc, char** argv)
 			localplayer.setProjectile(localplayer.getX(), localplayer.getY());
 			}
 		}
-
-		if(isShooting){
-			localplayer.shoot(isShooting, top);
-
-		}
-
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
 		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
@@ -102,10 +107,20 @@ int main(int argc, char** argv)
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, static_cast<u32>(Color::Clear));
 		C2D_SceneBegin(top);
+		if(isShooting){
+			localplayer.shoot(isShooting, top);
+		}
 		//C2D_DrawRectangle(localplayer.getX(), SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
-
 		C2D_DrawSprite(&spaceship);
+
+		for (int i = 0; i < MAXIMUM_ROWS; i++) {
+			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+			C2D_SpriteSetPos(&sprites[enemies[i][j].getSprite()].sprite, enemies[i][j].getX(), enemies[i][j].getY());
+			C2D_DrawSprite(&sprites[enemies[i][j].getSprite()].sprite);
+
+  		}
+		}
 
 		C3D_FrameEnd(0);
 
@@ -128,15 +143,12 @@ int main(int argc, char** argv)
 }
 
 static void initSprites(){
-	for(size_t i = 0; i<MAX_SPRITES; i++){
-		Sprite* sprite = &sprites[i];
+    for(size_t i = 0; i<MAX_SPRITES; i++){
+        Sprite* sprite = &sprites[i];
 
-		
-		C2D_SpriteFromSheet(&sprite->sprite, spriteSheet,i);
-		C2D_SpriteSetCenter(&sprite->sprite, 0.5f, 0.5f);
-		C2D_SpriteSetPos(&sprite->sprite, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
-	}
-
-
-
+        C2D_SpriteFromSheet(&sprite->sprite, spriteSheet,i);
+        C2D_SpriteSetCenter(&sprite->sprite, 0.5f, 0.5f);
+        C2D_SpriteSetPos(&sprite->sprite, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
+    }
 }
+

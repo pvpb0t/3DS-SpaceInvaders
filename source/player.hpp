@@ -49,11 +49,8 @@ void Player::setProjectile(float x, float y){
 
 void Player::shoot(bool& keep, C3D_RenderTarget* top){
     printf("Projectile Y: %f\n", m_projectilePosition.y());
-    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-	C2D_SceneBegin(top);
-    C2D_DrawRectangle(m_projectilePosition.x(), m_projectilePosition.y(), 0.0f, 10.0f, 20.0f, C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF));
-    C3D_FrameEnd(0);
-    m_projectilePosition.setY(m_projectilePosition.y() - 4.0f);
+    C2D_DrawRectangle(m_projectilePosition.x(), m_projectilePosition.y(), 0.0f, 4.0f, 10.0f, C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF), C2D_Color32(0xFF, 0x00, 0x00, 0xFF));
+    m_projectilePosition.setY(m_projectilePosition.y() - 6.0f);
 
     if(m_projectilePosition.y() < 0.0f){
         keep=false;
