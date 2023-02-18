@@ -18,11 +18,36 @@ typedef struct {
 	C2D_Sprite sprite;
 } Sprite;
 
+enum class Color : u32 {
+	 clrWhite = C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF),
+	 clrGreen = C2D_Color32(0x00, 0xFF, 0x00, 0xFF),
+	 clrRed   = C2D_Color32(0xFF, 0x00, 0x00, 0xFF),
+	 clrBlue  = C2D_Color32(0x00, 0x00, 0xFF, 0xFF),
+
+	 clrCircle1 = C2D_Color32(0xFF, 0x00, 0xFF, 0xFF),
+	 clrCircle2 = C2D_Color32(0xFF, 0xFF, 0x00, 0xFF),
+	 clrCircle3 = C2D_Color32(0x00, 0xFF, 0xFF, 0xFF),
+
+	 clrSolidCircle = C2D_Color32(0x68, 0xB0, 0xD8, 0xFF),
+
+	 clrTri1 = C2D_Color32(0xFF, 0x15, 0x00, 0xFF),
+	 clrTri2 = C2D_Color32(0x27, 0x69, 0xE5, 0xFF),
+
+	 clrRec1 = C2D_Color32(0x9A, 0x6C, 0xB9, 0xFF),
+	 clrRec2 = C2D_Color32(0xFF, 0xFF, 0x2C, 0xFF),
+	 clrRec3 = C2D_Color32(0xD8, 0xF6, 0x0F, 0xFF),
+	 clrRec4 = C2D_Color32(0x40, 0xEA, 0x87, 0xFF),
+
+	 clrClear = C2D_Color32(0xFF, 0xD8, 0xB0, 0x68)
+
+};
+
 static C2D_SpriteSheet spriteSheet;
 static Sprite sprites[MAX_SPRITES];
 
 // Declaring the prototype for initSprites, the function that will initialize the sprites
 static void initSprites();
+
 
 int main(int argc, char** argv)
 {
@@ -73,15 +98,16 @@ int main(int argc, char** argv)
 
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
-		printf("\x1b[2;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime()*6.0f);
-		printf("\x1b[3;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime()*6.0f);
-		printf("\x1b[4;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage()*100.0f);
+		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
+		printf("GPU:     %f\n", C3D_GetDrawingTime()*6.0f);
+		printf("HCmdBuf:  %f\n", C3D_GetCmdBufUsage()*100.0f);
 	
 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-		C2D_TargetClear(top, C2D_Color32f(0.0f, 0.0f, 0.0f, 1.0f));
+		C2D_TargetClear(top, static_cast<u32>(Color::clrClear));
 		C2D_SceneBegin(top);
-		C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
+		C2D_DrawRectangle(SCREEN_WIDTH - 50, 0, 0, 50, 50, static_cast<u32>(Color::clrRec1), static_cast<u32>(Color::clrRec2), static_cast<u32>(Color::clrRec3), static_cast<u32>(Color::clrRec4));
+		//C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
 		C3D_FrameEnd(0);
 
 		// Flush and swap framebuffers
