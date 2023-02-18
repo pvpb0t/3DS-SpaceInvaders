@@ -3,14 +3,15 @@
         {
             "name": "3DS",
             "includePath": [
-                "C:/msys64/opt/devkitPRO/devkitARM/arm-none-eabi/include/**",
-                "C:/msys64/opt/devkitPRO/devkitARM/lib/gcc/arm-none-eabi/**",
-                "C:/msys64/opt/devkitPRO/libctru/include/**"
+                
+                "C:/devkitPRO/devkitARM/arm-none-eabi/include/**",
+                "C:/devkitPRO/devkitARM/lib/gcc/arm-none-eabi/**",
+                "C:/devkitPRO/libctru/include/**"
             ],
             "defines": [
                 "_3DS"
             ],
-            "compilerPath": "C:/msys64/opt/devkitPRO/devkitARM/bin/arm-none-eabi-gcc",
+            "compilerPath": "C:/devkitPRO/devkitARM/bin/arm-none-eabi-gcc",
             "cStandard": "c11",
             "cppStandard": "c++20",
             "intelliSenseMode": "linux-gcc-arm",

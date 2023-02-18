@@ -10,7 +10,7 @@ class Entity
 {
 public:
     Entity(int maxHP, float x, float y, float width, float height, int spriteIndex);
-    ~Entity();
+    virtual ~Entity();
 
     // Getters //
     float getX() const;
@@ -48,14 +48,15 @@ private:
     bool m_isMoving;
 };
 
-Entity::Entity(int maxHP, float x, float y, float width, float height)
+Entity::Entity(int maxHP, float x, float y, float width, float height,int spriteIndex)
 {
     m_x = x;
     m_y = y;
     m_width = width;
     m_height = height;
-    m_maxHP, m_hp = maxHP;
-    m_spriteIndex = 0;
+    m_maxHP = maxHP;
+    m_hp = maxHP;
+    m_spriteIndex = spriteIndex;
     m_isAlive = true;
     m_isMoving = false;
 }

@@ -36,9 +36,8 @@ int main(int argc, char** argv)
 	C2D_Prepare();
 	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-	Player localplayer(1,1,1,1,1);
+    Player localplayer(10, 0.0f, 0.0f, 16.0f, 16.0f, 0);
 
-	localplayer.setX(2);
 
 
 	spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
@@ -51,10 +50,7 @@ int main(int argc, char** argv)
 	initSprites();
 
 	C2D_Sprite spaceship = sprites[4].sprite;
-	float x = 100.0f;
-    float y = 100.0f;
-    int width = 64;
-    int height = 64;
+
 
 
 	// Main loop
@@ -66,20 +62,25 @@ int main(int argc, char** argv)
 		u32 kDown = hidKeysDown();
 		if (kDown & KEY_START) break; // break in order to return to hbmenu
 
-		if (kDown & KEY_B){
-			localplayer.setX(4);
-		}
+        if (kDown & KEY_LEFT) {
+            localplayer.moveLeft();
+        }
+        if (kDown & KEY_RIGHT) {
+            localplayer.moveRight();
+        }
 
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
 
+	
+			C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+			C2D_TargetClear(top, C2D_Color32f(0.0f, 0.5f, 0.0f, 1.0f));
+			C2D_SceneBegin(top); 
 
-		//START RENDERING
-		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-		C2D_TargetClear(top, C2D_Color32(0, 0, 0, 0));
-		C2D_DrawSprite(&spaceship);
+			//Draws the sprites
+			C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
+						C3D_FrameEnd(0);
 
-		C3D_FrameEnd(0);
 		// Flush and swap framebuffers
 		gfxFlushBuffers();
 		gfxSwapBuffers();
