@@ -7,7 +7,7 @@
 #include <cstdio>
 #include "player.hpp"
 
-#define SCREEN_WIDTH  320
+#define SCREEN_WIDTH  400
 #define SCREEN_HEIGHT 240
 
 
@@ -26,15 +26,16 @@ static void initSprites();
 
 int main(int argc, char** argv)
 {
+	romfsInit();
 	gfxInitDefault();
-	consoleInit(GFX_TOP, NULL);
+	consoleInit(GFX_BOTTOM, NULL);
 
 	C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
 	//Initialize citro2d and sets max objects
 	C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
 	//Prepares the GPU for rendering 2D content
 	C2D_Prepare();
-	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
+	C3D_RenderTarget* top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
 
     Player localplayer(10, 0.0f, 0.0f, 16.0f, 16.0f, 0);
 
@@ -62,24 +63,26 @@ int main(int argc, char** argv)
 		u32 kDown = hidKeysDown();
 		if (kDown & KEY_START) break; // break in order to return to hbmenu
 
-        if (kDown & KEY_LEFT) {
+		u32 kHeld = hidKeysHeld();
+        if (kHeld & KEY_LEFT) {
             localplayer.moveLeft();
         }
-        if (kDown & KEY_RIGHT) {
+        if (kHeld & KEY_RIGHT) {
             localplayer.moveRight();
         }
 
 		// Print a string to the console
 		printf("Localplayer X: %f\n", localplayer.getX());
-
+		printf("\x1b[2;1HCPU:     %6.2f%%\x1b[K", C3D_GetProcessingTime()*6.0f);
+		printf("\x1b[3;1HGPU:     %6.2f%%\x1b[K", C3D_GetDrawingTime()*6.0f);
+		printf("\x1b[4;1HCmdBuf:  %6.2f%%\x1b[K", C3D_GetCmdBufUsage()*100.0f);
 	
-			C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
-			C2D_TargetClear(top, C2D_Color32f(0.0f, 0.5f, 0.0f, 1.0f));
-			C2D_SceneBegin(top); 
 
-			//Draws the sprites
-			C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
-						C3D_FrameEnd(0);
+		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+		C2D_TargetClear(top, C2D_Color32f(0.0f, 0.0f, 0.0f, 1.0f));
+		C2D_SceneBegin(top);
+		C2D_DrawSprite(&sprites[localplayer.getSprite()].sprite);
+		C3D_FrameEnd(0);
 
 		// Flush and swap framebuffers
 		gfxFlushBuffers();
@@ -106,7 +109,7 @@ static void initSprites(){
 		
 		C2D_SpriteFromSheet(&sprite->sprite, spriteSheet,i);
 		C2D_SpriteSetCenter(&sprite->sprite, 0.5f, 0.5f);
-
+		C2D_SpriteSetPos(&sprite->sprite, rand() % SCREEN_WIDTH, rand() % SCREEN_HEIGHT);
 	}
 
 
