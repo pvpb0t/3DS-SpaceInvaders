@@ -77,8 +77,6 @@ int main(int argc, char** argv)
 
 	C2D_Sprite spaceship = sprites[4].sprite;
 
-
-
 	// Main loop
 	while (aptMainLoop())
 	{
@@ -111,11 +109,11 @@ int main(int argc, char** argv)
 		C3D_FrameEnd(0);
 
 		// Flush and swap framebuffers
-		gfxFlushBuffers();
+	/*	gfxFlushBuffers();
 		gfxSwapBuffers();
 
-		//Wait for VBlank
-		gspWaitForVBlank();
+		Wait for VBlank
+		gspWaitForVBlank();*/
 	}
 
 	C2D_SpriteSheetFree(spriteSheet);
