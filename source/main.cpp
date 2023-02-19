@@ -43,6 +43,7 @@ static void checkAliens(int i, int j, Player localplayer);
 
 static int ticksExisted=0;
 static bool shouldMoveRight=true;
+static bool pushedTooFar=false;
 
 //statistics
 static int waveCounter =1;
@@ -157,6 +158,9 @@ int main(int argc, char** argv)
 				enemiesLeft++;
 			if (i == MAXIMUM_ROWS - 1) {
                 checkAliens(i, j, localplayer);
+				if(enemies[i][j].getY() > MAX_SCREEN_HEIGHT-localplayer.getHeight()){
+					pushedTooFar=true;
+				}
             } else {
                 bool hasAliensBelow = false;
                 for (int k = i + 1; k < MAXIMUM_ROWS; k++) {
@@ -190,10 +194,11 @@ int main(int argc, char** argv)
 			waveCounter++;
 		}
 
-		if(lifeCounter<=0){
+		if(lifeCounter<=0 ||pushedTooFar==true){
 			waveCounter=1;
 			pointsCounter=0;
 			lifeCounter=3;
+			pushedTooFar=false;
 			generateAliens();
 		}
 

@@ -40,12 +40,16 @@ Player::~Player()
 
 void Player::moveLeft()
 {
+    if(getX()>0){
     moveByX(-5.0f);
+    }
 }
 
 void Player::moveRight()
 {
+    if(getX()<MAX_SCREEN_WIDTH){
     moveByX(5.0f);
+    }
 }
 
 Projectile Player::getProjectile(){
