@@ -22,7 +22,7 @@ public:
     Projectile getProjectile();
     void setShooting(bool shooting);
     bool isShooting();
-    void shoot(float x, float y, float width, float height);
+    bool shoot(float x, float y, float width, float height);
 
 private:
     Projectile m_projectile;
@@ -73,15 +73,16 @@ bool Enemy::isShooting(){
 }
 
 
-void Enemy::shoot(float x, float y, float width, float height){
+bool Enemy::shoot(float x, float y, float width, float height){
     if(m_shooting){
         if(m_projectile.isAlive()){
             m_projectile.move(+1.5f);
-            m_projectile.checkCollisions(x, y, width, height);
+            return (m_projectile.checkCollisions(x, y, width, height));
         }else{
             m_shooting=false;
         }
     }
+    return false;
 }
 
 #endif

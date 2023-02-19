@@ -38,8 +38,17 @@ static Sprite sprites[MAX_SPRITES];
 // Declaring the prototype for initSprites, the function that will initialize the sprites
 static void initSprites();
 
+static void generateAliens();
+static void checkAliens(int i, int j, Player localplayer);
+
 static int ticksExisted=0;
 static bool shouldMoveRight=true;
+
+//statistics
+static int waveCounter =1;
+static int pointsCounter =0;
+static int lifeCounter =3;
+
 
 
 int main(int argc, char** argv)
@@ -72,10 +81,8 @@ int main(int argc, char** argv)
 	C2D_SpriteSetScale(&spaceship, 1.0f, 1.0f);
 	localplayer.gotoY(MAX_SCREEN_HEIGHT-50);
 
-	for (int i = 0; i < MAXIMUM_ROWS; i++) {
-		for (int j = 0; j < MAXIMUM_COLUMS; j++) {
-    	enemies[i][j] = Enemy(1, 48+j*32.0, 16+i*32.0, 16.0f, 16.0f, 0);
-  	}}
+	generateAliens();
+
 
 	// Main loop
 	while (aptMainLoop())
@@ -127,10 +134,13 @@ int main(int argc, char** argv)
 		}
 
 		// Print a string to the console
-		printf("Localplayer X: %f\n", localplayer.getX());
+		printf("Points: %d\n", pointsCounter);
+		printf("Wave: %d\n", waveCounter);
+		printf("Life: %d\n", lifeCounter);
 		printf("CPU:    %f\n", C3D_GetProcessingTime()*6.0f);
 		printf("GPU:     %f\n", C3D_GetDrawingTime()*6.0f);
 		printf("HCmdBuf:  %f\n", C3D_GetCmdBufUsage()*100.0f);
+
 	
 
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
@@ -140,30 +150,31 @@ int main(int argc, char** argv)
 		//C2D_DrawRectangle(localplayer.getX(), MAX_SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
 		C2D_DrawSprite(&spaceship);
-
+		int enemiesLeft = 0;
 		for (int i = 0; i < MAXIMUM_ROWS; i++) {
 			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
 			if(enemies[i][j].isAlive()){
-				if(i==MAXIMUM_ROWS-1){
-					int randNum = rand() % 100;
-    				if (randNum < 5) { 
-						if(!enemies[i][j].isShooting()){
-						enemies[i][j].setShooting(true);
-						}
-					}
-					
-					if(enemies[i][j].isShooting()){
-						enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight());
-						enemies[i][j].getProjectile().draw();
-					}
+				enemiesLeft++;
+			if (i == MAXIMUM_ROWS - 1) {
+                checkAliens(i, j, localplayer);
+            } else {
+                bool hasAliensBelow = false;
+                for (int k = i + 1; k < MAXIMUM_ROWS; k++) {
+                    if (enemies[k][j].isAlive()) {
+                        hasAliensBelow = true;
+                        break;
+                    }
+                }
 
+                if (!hasAliensBelow) {
+                    checkAliens(i, j, localplayer);
+                }
+            }
 
-					
-					
-				}
 			if(localplayer.isShooting()){
 				if(localplayer.shoot(enemies[i][j].getX(), enemies[i][j].getY(), enemies[i][j].getWidth(), enemies[i][j].getHeight(), ticksExisted)){
 					enemies[i][j].killEntity();
+					pointsCounter+=200;
 				}
 					
 			}
@@ -173,6 +184,19 @@ int main(int argc, char** argv)
 
   		}
 		}
+
+		if(enemiesLeft==0){
+			generateAliens();
+			waveCounter++;
+		}
+
+		if(lifeCounter<=0){
+			waveCounter=1;
+			pointsCounter=0;
+			lifeCounter=3;
+			generateAliens();
+		}
+
 		if(localplayer.isShooting()){
 			localplayer.getProjectile().draw();
 
@@ -196,7 +220,28 @@ int main(int argc, char** argv)
 	romfsExit();
 	return 0;
 }
+static void generateAliens(){
+	for (int i = 0; i < MAXIMUM_ROWS; i++) {
+		for (int j = 0; j < MAXIMUM_COLUMS; j++) {
+    	enemies[i][j] = Enemy(1, 48+j*32.0, 16+i*32.0, 16.0f, 16.0f, 0);
+  	}}
+}
 
+static void checkAliens(int i, int j, Player localplayer){
+int randNum = rand() % 100;
+	if (randNum < 5) { 
+		if(!enemies[i][j].isShooting()){
+		enemies[i][j].setShooting(true);
+		}
+	}
+	
+	if(enemies[i][j].isShooting()){
+		if(enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight())){
+			lifeCounter--;
+		}
+		enemies[i][j].getProjectile().draw();
+	}
+}
 static void initSprites(){
     for(size_t i = 0; i<MAX_SPRITES; i++){
         Sprite* sprite = &sprites[i];
@@ -206,4 +251,6 @@ static void initSprites(){
         C2D_SpriteSetPos(&sprite->sprite, rand() % MAX_SCREEN_WIDTH, rand() % MAX_SCREEN_HEIGHT);
     }
 }
+
+
 
