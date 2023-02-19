@@ -149,15 +149,13 @@ int main(int argc, char** argv)
 			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
 			if(enemies[i][j].isAlive()){
 				if(i==MAXIMUM_ROWS-1){
-					int randNum = rand() % 100;
-    				if (randNum < 5) { 
 						if(!enemies[i][j].isShooting()){
-						
 						enemies[i][j].setShooting(true);
 						}
-					}
+					
 					
 					if(enemies[i][j].isShooting()){
+						printf("SHOOTING!");
 						enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight());
 					}
 					
