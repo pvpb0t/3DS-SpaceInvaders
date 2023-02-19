@@ -76,7 +76,7 @@ bool Enemy::isShooting(){
 void Enemy::shoot(float x, float y, float width, float height){
     if(m_shooting){
         if(m_projectile.isAlive()){
-            m_projectile.move(-3.0f);
+            m_projectile.move(+3.0f);
             m_projectile.checkCollisions(x, y, width, height);
         }else{
             m_shooting=false;

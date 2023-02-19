@@ -13,7 +13,7 @@ public:
     virtual ~Projectile();
 
     void move(float dy);
-    void draw(C3D_RenderTarget* target);
+    void draw();
     bool checkCollisions(float x, float y, float width, float height);
 
     bool isAlive();
@@ -53,7 +53,7 @@ void Projectile::move(float dy)
     }
 }
 
-void Projectile::draw(C3D_RenderTarget* target)
+void Projectile::draw()
 {
     if (m_alive) {
     C2D_DrawRectangle(m_position.x(), m_position.y(), 0.0f, 4.0f, 10.0f, C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF));

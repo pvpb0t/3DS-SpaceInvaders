@@ -157,6 +157,7 @@ int main(int argc, char** argv)
 					if(enemies[i][j].isShooting()){
 						printf("SHOOTING!");
 						enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight());
+						enemies[i][j].getProjectile().draw();
 					}
 					
 					
