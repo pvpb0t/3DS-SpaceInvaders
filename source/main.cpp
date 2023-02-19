@@ -34,7 +34,6 @@ enum class Color : u32 {
 
 static C2D_SpriteSheet spriteSheet;
 static Sprite sprites[MAX_SPRITES];
-static bool isShooting = false;
 
 // Declaring the prototype for initSprites, the function that will initialize the sprites
 static void initSprites();
@@ -97,11 +96,12 @@ int main(int argc, char** argv)
         }
 
 		if(kDown & KEY_A){
-			if(!isShooting){
-			isShooting=true;
 			//localplayer.setProjectile(localplayer.getX(), localplayer.getY());
+			if(!localplayer.isShooting()){
+						localplayer.setShooting(true);
+				}
 			}
-		}
+		
 
 		if(ticksExisted%34==0){
 			for (int i = 0; i < MAXIMUM_ROWS; i++) {
@@ -136,11 +136,7 @@ int main(int argc, char** argv)
 		C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
 		C2D_TargetClear(top, static_cast<u32>(Color::Clear));
 		C2D_SceneBegin(top);
-		if(isShooting){
-			/*localplayer.shoot(isShooting, top);
-			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS, isShooting)) {*/
-   			 
-		}
+
 		//C2D_DrawRectangle(localplayer.getX(), MAX_SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
 		C2D_DrawSprite(&spaceship);
@@ -149,27 +145,40 @@ int main(int argc, char** argv)
 			for (int j = 0; j < MAXIMUM_COLUMS; j++) {
 			if(enemies[i][j].isAlive()){
 				if(i==MAXIMUM_ROWS-1){
+					int randNum = rand() % 100;
+    				if (randNum < 5) { 
 						if(!enemies[i][j].isShooting()){
 						enemies[i][j].setShooting(true);
 						}
-					
+					}
 					
 					if(enemies[i][j].isShooting()){
-						printf("SHOOTING!");
 						enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight());
 						enemies[i][j].getProjectile().draw();
 					}
+
+
 					
 					
 				}
+			if(localplayer.isShooting()){
+				if(localplayer.shoot(enemies[i][j].getX(), enemies[i][j].getY(), enemies[i][j].getWidth(), enemies[i][j].getHeight(), ticksExisted)){
+					enemies[i][j].killEntity();
+				}
+					
+			}
 			C2D_SpriteSetPos(&sprites[enemies[i][j].getSprite()].sprite, enemies[i][j].getX(), enemies[i][j].getY());
 			C2D_DrawSprite(&sprites[enemies[i][j].getSprite()].sprite);
 			}
+
   		}
 		}
+		if(localplayer.isShooting()){
+			localplayer.getProjectile().draw();
 
+		}
 		C3D_FrameEnd(0);
-
+		consoleClear();
 		// Flush and swap framebuffers
 	/*	gfxFlushBuffers();
 		gfxSwapBuffers();

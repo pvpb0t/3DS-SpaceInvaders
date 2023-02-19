@@ -62,7 +62,7 @@ Projectile Enemy::getProjectile(){
 void Enemy::setShooting(bool shooting){
     m_shooting=shooting;
     if(m_shooting){
-        m_projectile=Projectile(getX(), getY(), 4.0f, 10.0f);
+        m_projectile=Projectile(getX(), getY(), 3.0f, 8.0f);
         m_projectile.setAlive(true);
 
     }
@@ -76,7 +76,7 @@ bool Enemy::isShooting(){
 void Enemy::shoot(float x, float y, float width, float height){
     if(m_shooting){
         if(m_projectile.isAlive()){
-            m_projectile.move(+3.0f);
+            m_projectile.move(+1.5f);
             m_projectile.checkCollisions(x, y, width, height);
         }else{
             m_shooting=false;
