@@ -8,6 +8,7 @@
 #include "player.hpp"
 #include "enemy.hpp"
 #include "constants.hpp"
+#include "projectile.hpp"
 
 
 
@@ -98,7 +99,7 @@ int main(int argc, char** argv)
 		if(kDown & KEY_A){
 			if(!isShooting){
 			isShooting=true;
-			localplayer.setProjectile(localplayer.getX(), localplayer.getY());
+			//localplayer.setProjectile(localplayer.getX(), localplayer.getY());
 			}
 		}
 
@@ -136,9 +137,9 @@ int main(int argc, char** argv)
 		C2D_TargetClear(top, static_cast<u32>(Color::Clear));
 		C2D_SceneBegin(top);
 		if(isShooting){
-			localplayer.shoot(isShooting, top);
-			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS, isShooting)) {
-    }
+			/*localplayer.shoot(isShooting, top);
+			if (localplayer.checkCollisions(enemies, MAXIMUM_ROWS, MAXIMUM_COLUMS, isShooting)) {*/
+   			 
 		}
 		//C2D_DrawRectangle(localplayer.getX(), MAX_SCREEN_HEIGHT-50, 0, 50, 50, static_cast<u32>(Color::Red), static_cast<u32>(Color::Red), static_cast<u32>(Color::Green), static_cast<u32>(Color::Green));
 		C2D_SpriteSetPos(&spaceship, localplayer.getX(), localplayer.getY());
@@ -157,11 +158,7 @@ int main(int argc, char** argv)
 					}
 					
 					if(enemies[i][j].isShooting()){
-					enemies[i][j].shoot(top);
-				
-					if(enemies[i][j].checkCollisions(localplayer)){
-
-					}
+						enemies[i][j].shoot(localplayer.getX(), localplayer.getY(), localplayer.getWidth(), localplayer.getHeight());
 					}
 					
 					

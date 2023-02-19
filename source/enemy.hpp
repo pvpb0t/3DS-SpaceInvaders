@@ -1,9 +1,15 @@
 #ifndef ENEMY_H
 #define ENEMY_H
 
+#pragma once
+
+
 #include "entity.hpp"
-#include "player.hpp"
+#include "vector2f.hpp"
 #include "constants.hpp"
+#include "projectile.hpp"
+
+class Player; // forward declaration
 
 class Enemy : public Entity
 {
@@ -12,14 +18,14 @@ public:
     Enemy(int maxHP, float x, float y, float width, float height, int spriteIndex);
     virtual ~Enemy();
 
-    void shoot(C3D_RenderTarget* top);
-    void setProjectile(float x, float y);
-    bool checkCollisions(Player& player);
     void move(float dx, float dy);
-    void setShooting(bool keep);
+    Projectile getProjectile();
+    void setShooting(bool shooting);
     bool isShooting();
+    void shoot(float x, float y, float width, float height);
+
 private:
-    Vector2f m_projectilePosition;
+    Projectile m_projectile;
     bool m_shooting;
 
 };
@@ -32,6 +38,7 @@ Enemy::Enemy()
 
 Enemy::Enemy(int maxHP, float x, float y, float width, float height, int spriteIndex)
     : Entity(maxHP, x, y, width, height, spriteIndex)
+    , m_shooting(false)
 {
 
 }
@@ -47,40 +54,34 @@ void Enemy::move(float dx, float dy)
     moveByY(dy);
 }
 
+
+Projectile Enemy::getProjectile(){
+    return m_projectile;
+}
+
+void Enemy::setShooting(bool shooting){
+    m_shooting=shooting;
+    if(m_shooting){
+        m_projectile=Projectile(getX(), getY(), 4.0f, 10.0f);
+        m_projectile.setAlive(true);
+
+    }
+}
+
 bool Enemy::isShooting(){
-    return m_shooting;
-}
-
-void Enemy::setProjectile(float x, float y){
-    m_projectilePosition.setX(x);
-    m_projectilePosition.setY(y);
-}
-void Enemy::setShooting(bool keep){
-    m_shooting=keep;
+     return m_shooting;
 }
 
 
-
-void Enemy::shoot(C3D_RenderTarget* top){
-    C2D_DrawRectangle(m_projectilePosition.x(), m_projectilePosition.y(), 0.0f, 4.0f, 10.0f, C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF), C2D_Color32(0xFF, 0xFF, 0xFF, 0xFF));
-    m_projectilePosition.setY(m_projectilePosition.y() - 6.0f);
-
-    if(m_projectilePosition.y() > MAX_SCREEN_HEIGHT){
-        m_shooting=false;
+void Enemy::shoot(float x, float y, float width, float height){
+    if(m_shooting){
+        if(m_projectile.isAlive()){
+            m_projectile.move(-3.0f);
+            m_projectile.checkCollisions(x, y, width, height);
+        }else{
+            m_shooting=false;
+        }
     }
-    
 }
-
-bool Enemy::checkCollisions(Player& player) {
-    if (m_projectilePosition.x() >= player.getX() - player.getWidth() / 2 && m_projectilePosition.x() <= player.getX() + player.getWidth() / 2 && m_projectilePosition.y() >= player.getY() - player.getHeight() / 2 && m_projectilePosition.y() <= player.getY() + player.getHeight() / 2) {
-        printf("Player hit by projectile\n");
-        m_shooting = false;
-        return true;
-    }
-
-    return false;
-}
-
-
 
 #endif
